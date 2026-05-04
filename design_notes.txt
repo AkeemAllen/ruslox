@@ -1,0 +1,19 @@
+This document is a collection of my thoughts on building this language.
+Most notable, the different between designing this in C vs Rust.
+
+May 4, 2026
+The first thing I noticed was the amount of effort it takes to write and handle dynamic arrays in C.
+It's definitely more manual control than using `Vec` in Rust, but I prefer the convenience a more modern language gives me.
+Handling dynamic arrays takes up about half of the "Chunks of ByteCode" chapter.
+
+Another major difference is the way constants are handled. At least in my current implementation.
+In C, the constants can be stored in the same code array in Chunk. That's because C enums are basically just ints (if I remember correctly)
+However, in Rust, you can't just store a constant in Vec<OpCode>, so we get more use out of the second values array Vec<Value>
+
+When we add the OpConstant opcode to the code array, we insert the next token (a constant) int to values array.
+We can pop from the Value array as we need them.
+
+Right now, this feels like an easier mental model, but I'm likely sacrificing some amount of performance.
+When compiling constants, instead of just reading the next byte in `code`, I'll need to reach across to another array, pop the value, and continue from there.
+
+I don't know what else this will mess up down the line, but I'm here for it.
